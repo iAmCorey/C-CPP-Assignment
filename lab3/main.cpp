@@ -16,10 +16,8 @@
 using namespace std;
 
 City cities[arraySize];
-string citiesStr[1000];
 int citisNum;
 string fCity, sCity;
-
 
 int main() {
     double fLati, fLong, sLati, sLong;
@@ -38,6 +36,11 @@ int main() {
         if(value.length())
         {
             cities[i].cityName = value;
+            if(value.length()>nameMaxLen){
+                cities[i].cityName = value.substr(0,nameMaxLen);
+                cout << value << " is truncated to " << value.substr(0,nameMaxLen) << " because its name is too long." << endl;
+                cout << "So please enter the name after truncated if you want to enter this city." << endl;
+            }
         }
         // province name(ignored)
         getline(file, value, ',');
@@ -58,6 +61,11 @@ int main() {
         if(value.length())
         {
             cities[i].longtitude = atof(value.c_str());
+        }
+        // handle the situation that the number of city > the array size
+        if(i>arraySize-2){
+            cout << "The cities has been filled, others data after " << i+1 << " row are not loaded." << endl;
+            break;
         }
         i++;
     }

@@ -12,8 +12,8 @@
 #define Pi 3.141592654
 #define R 6371
 
-const int arraySize = 1000;
-const int nameMaxLen = 35;
+const int arraySize = 800;
+const int nameMaxLen = 25;
 
 double calculate(double fLati, double fLong, double sLati, double sLong);
 double convert(double angle);
