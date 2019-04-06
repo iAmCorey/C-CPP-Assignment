@@ -12,14 +12,15 @@
 #define Pi 3.141592654
 #define R 6371
 
-const int arraySize = 800;
-const int nameMaxLen = 25;
+const int arraySize = 1000;
+const int nameMaxLen = 35;
 
 double calculate(double fLati, double fLong, double sLati, double sLong);
 double convert(double angle);
 int handleInput(std::string input, int fOrS);
 int findIndex(std::string input, int fOrS);
 void trim(std::string &str);
+std::string toUpper(std::string str);
 
 struct City{
     std::string cityName;

@@ -11,6 +11,7 @@
 #include <string>
 #include <cmath>
 #include <cstdlib>
+#include <algorithm>
 #include "def.hpp"
 
 using namespace std;
@@ -71,7 +72,9 @@ int main() {
     }
     file.close();
     citisNum = i-1;
-    cout << "Loading successfully!" << endl;
+    if(i<arraySize-1){
+        cout << "Loading successfully!" << endl;
+    }
     //verification
     // cout << cities[598].latitude << ", "<< cities[598].longtitude << endl;
 //    for (int j = 0; j<i-1; j++) {
@@ -83,7 +86,7 @@ int main() {
         cout << "Enter the first city's name(Enter \"bye\" to exit): ";
         getline(cin, fCity);
         trim(fCity);
-        if(fCity == "bye"){
+        if(toUpper(fCity) == "BYE"){
             cout << "Bye" << endl;
             exit(0);
         }
@@ -92,13 +95,17 @@ int main() {
             cout << "Enter the first city's name(Enter \"bye\" to exit): ";
             getline(cin, fCity);
             trim(fCity);
+            if(toUpper(fCity) == "BYE"){
+                cout << "Bye" << endl;
+                exit(0);
+            }
             idx1 = handleInput(fCity, 1);
         }
         
         cout << "Enter the second city's name(Enter \"bye\" to exit): ";
         getline(cin, sCity);
         trim(sCity);
-        if(sCity == "bye"){
+        if(toUpper(sCity) == "BYE"){
             cout << "Bye" << endl;
             exit(0);
         }
@@ -107,6 +114,10 @@ int main() {
             cout << "Enter the second city's name(Enter \"bye\" to exit): ";
             getline(cin, sCity);
             trim(sCity);
+            if(toUpper(sCity) == "BYE"){
+                cout << "Bye" << endl;
+                exit(0);
+            }
             idx2 = handleInput(sCity,2);
         }
         
@@ -150,7 +161,7 @@ int handleInput(string input, int fOrS){
     }
     
     // "New" case
-    if(input == "New"){
+    if(toUpper(input) == "NEW"){
         string choice = "0";
         cout << "There're several cities whose name starts with \"New\", please select the correct one by the index." << endl;
         cout << "1: New Delhi\n2: New Orleans\n3: New York City\n4: Newcastle upon Tyne\n5: Newcastle" << endl;
@@ -183,7 +194,7 @@ int handleInput(string input, int fOrS){
     }
     
     // "New York" case
-    if (input == "New York") {
+    if (toUpper(input) == "NEW YORK") {
         if(fOrS == 1)fCity = "New York City";
         else if(fOrS == 2)sCity = "New York City";
         return 598;
@@ -197,7 +208,7 @@ int handleInput(string input, int fOrS){
 // handle valid cases - return the index of the city in the cities array
 int findIndex(string cityName, int fOrS){
     for (int i = 0; i<citisNum; i++) {
-        if (cities[i].cityName == cityName) {
+        if (toUpper(cities[i].cityName) == toUpper(cityName)) {
             return i;
         }
     }
@@ -211,4 +222,11 @@ void trim(string &str){
         str.erase(0,str.find_first_not_of(" "));
         str.erase(str.find_last_not_of(" ") + 1);
     }
+}
+
+// to upper the input string
+string toUpper(string str){
+    string new_str = str;
+    transform(new_str.begin(), new_str.end(), new_str.begin(), (int (*)(int))toupper);
+    return new_str;
 }
