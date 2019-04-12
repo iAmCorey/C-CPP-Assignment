@@ -34,8 +34,7 @@ And there're some special situation need to handle:
 2.  The size of the array which stores all the cities' information is 800. (The total number is 988 rows.)
 3.  The file `world_cities.csv` isn't found.
 4.  The input city isn't found or its length < 3.
-5.  The input is "New York" and "New York City" must be retrieved.
-6.  The input is "New" and the list of the cities whose name starts of "new" should be displayed.
+5.  The input city is some cities' names' substring, such as "New York", "New". The program should display the result and prompt user to choose it when substring matched.
 
 
 
@@ -111,7 +110,7 @@ int main() {
         }
         // handle the situation that the number of city > the array size
         if(i>arraySize-2){
-            cout << "The cities has been filled, others data after " << i+1 << " row are not loaded." << endl;
+            cout << "The cities array has been filled, others data after " << i+1 << " row are not loaded." << endl;
             break;
         }
         i++;
@@ -119,16 +118,11 @@ int main() {
     file.close();
     citisNum = i-1;
     if(i<arraySize-1){
-        cout << "Loading successfully!" << endl;
+        cout << "Loading successfully!\n" << endl;
     }
-    //verification
-    // cout << cities[598].latitude << ", "<< cities[598].longtitude << endl;
-//    for (int j = 0; j<i-1; j++) {
-//        cout << j << cities[j].cityName << ", "<< cities[j].countryName;
-//        cout << cities[j].latitude << cities[j].longtitude << endl;
-//    }
     
     while(1){
+        cout << "----------------------------------------------------" << endl;
         cout << "Enter the first city's name(Enter \"bye\" to exit): ";
         getline(cin, fCity);
         trim(fCity);
@@ -147,7 +141,6 @@ int main() {
             }
             idx1 = handleInput(fCity, 1);
         }
-        
         cout << "Enter the second city's name(Enter \"bye\" to exit): ";
         getline(cin, sCity);
         trim(sCity);
@@ -173,6 +166,7 @@ int main() {
         sLong = cities[idx2].longtitude;
         result = calculate(fLati, fLong, sLati, sLong);
         cout << "The distance between " << fCity <<  " and " << sCity << " is " << result << " km." << endl;
+        cout << "----------------------------------------------------\n" << endl;
     }
     return 0;
 }
@@ -200,65 +194,40 @@ double convert(double angle){
 // handle all cases - return the city's index in the cities array
 // fOrS - 1 means this is the first city; 2 means second.
 int handleInput(string input, int fOrS){
+    cout << endl;
+    
     // Invalid case - #characters < 3
     if(input.length() < 3){
         cout << "Invalid input - Less than 3 characters." << endl;
         return -1;
     }
     
-    // "New" case
-    if(toUpper(input) == "NEW"){
-        string choice = "0";
-        cout << "There're several cities whose name starts with \"New\", please select the correct one by the index." << endl;
-        cout << "1: New Delhi\n2: New Orleans\n3: New York City\n4: Newcastle upon Tyne\n5: Newcastle" << endl;
-        getline(cin, choice);
-        trim(choice);
-        char *end;
-        while(choice!="1" && choice!="2" && choice!="3" && choice!="4" && choice!="5") {
-            cout << "Invalid choice" << endl;
-            cout << "1: New Delhi\n2: New Orleans\n3: New York City\n4: Newcastle upon Tyne\n5: Newcastle" << endl;
-            getline(cin, choice);
-            trim(choice);
-        }
-        if(choice=="1"){
-            if(fOrS == 1)fCity = "New Delhi";
-            else if(fOrS == 2)sCity = "New Delhi";
-        }else if(choice=="2"){
-            if(fOrS == 1)fCity = "New Orleans";
-            else if(fOrS == 2)sCity = "New Orleans";
-        }else if(choice=="3"){
-            if(fOrS == 1)fCity = "New York City";
-            else if(fOrS == 2)sCity = "New York City";
-        }else if(choice=="4"){
-            if(fOrS == 1)fCity = "Newcastle upon Tyne";
-            else if(fOrS == 2)sCity = "Newcastle upon Tyne";
-        }else if(choice=="5"){
-            if(fOrS == 1)fCity = "Newcastle";
-            else if(fOrS == 2)sCity = "Newcastle";
-        }
-        return (int)strtol(choice.c_str(), &end, 10) + 595;
-    }
-    
-    // "New York" case
-    if (toUpper(input) == "NEW YORK") {
-        if(fOrS == 1)fCity = "New York City";
-        else if(fOrS == 2)sCity = "New York City";
-        return 598;
-    }
-    
-    // other valid cases
+    // valid cases
     return findIndex(input, fOrS);
-    
 }
 
-// handle valid cases - return the index of the city in the cities array
 int findIndex(string cityName, int fOrS){
+    int j = 0;
+    bool NotFound = true;
+    bool alreadyHave = false;
     for (int i = 0; i<citisNum; i++) {
         if (toUpper(cities[i].cityName) == toUpper(cityName)) {
             return i;
+        }else if(toUpper(cities[i].cityName).find(toUpper(cityName)) == 0){
+            if (!alreadyHave) {
+                cout << "The matched cities you want including: " << endl;
+                alreadyHave = true;
+            }
+            NotFound = false;
+            cout << j+1 << ": " << cities[i].cityName  << endl;
+            j++;
         }
     }
-    cout << "City " << cityName << " not found!" << endl;
+    if (NotFound) {
+        cout << "City " << cityName << " not found!" << endl;
+    }else{
+        cout << "Please input the entire name of the exact city you want.\n" << endl;
+    }
     return -1; // not found
 }
 
@@ -325,19 +294,19 @@ struct City{
 
 #### 1.
 
-![Screen Shot 2019-04-06 at 21.38.26](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.38.26.png)
+![Screen Shot 2019-04-12 at 11.25.48](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.25.48.png)
 
 #### 2.
 
-![Screen Shot 2019-04-06 at 21.39.42](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.39.42.png)
+![Screen Shot 2019-04-12 at 11.26.33](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.26.33.png)
 
 #### 3.
 
-![Screen Shot 2019-04-06 at 21.41.17](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.41.17.png)
+![Screen Shot 2019-04-12 at 11.27.22](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.27.22.png)
 
 #### 4.
 
-![Screen Shot 2019-04-06 at 21.39.42](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.39.42.png)
+![Screen Shot 2019-04-12 at 11.27.36](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.27.36.png)
 
 
 
@@ -347,9 +316,7 @@ struct City{
 
 ##### Case - bye
 
-![Screen Shot 2019-04-06 at 21.39.42](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.39.42.png)
-
-![Screen Shot 2019-04-06 at 21.51.48](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.51.48.png)
+![Screen Shot 2019-04-12 at 11.27.36](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.27.36.png)
 
 ##### Normal case
 
@@ -365,7 +332,7 @@ Verification:
 	1950
 ```
 
-![Screen Shot 2019-04-06 at 21.43.36](/Users/Personal/Desktop/Screen%20Shot%202019-04-06%20at%2021.43.36.png)
+![Screen Shot 2019-04-12 at 11.31.14](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.31.14.png)
 
 ![image-20190312151051998](/Users/Personal/Library/Application%20Support/typora-user-images/image-20190312151051998.png)
 
@@ -373,50 +340,37 @@ Test case #2:
 
 ```
 Input:
-	new york
+	new york city
 	rio de janeiro
 Output:
-	7751
+	7751.43
 Verification:
 	7760
 ```
 
-![Screen Shot 2019-04-06 at 21.44.47](/Users/Personal/Desktop/Screen%20Shot%202019-04-06%20at%2021.44.47.png)
+
 
 ![image-20190312151334571](/Users/Personal/Library/Application%20Support/typora-user-images/image-20190312151334571.png)
 
-
+![Screen Shot 2019-04-12 at 11.33.32](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.33.32.png)
 
 #### 2.
 
 ##### Case - not found & length < 3
 
-![Screen Shot 2019-04-06 at 21.50.20](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.50.20.png)
+![Screen Shot 2019-04-12 at 11.34.20](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.34.20.png)
 
 #### 3. 
 
-#####  Case - "New York" and "New"
+#####  Case - substring matching - e.g. "New York" and "New"
 
-Test case:
-
-```
-Input:
-	new
-	rio de janeiro
-	3 (means New York City)
-Output:
-	7751
-Verification:
-	7760
-```
-
-![Screen Shot 2019-04-06 at 21.45.46](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.45.46.png)
+![Screen Shot 2019-04-12 at 11.30.37](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.30.37.png)
 
 #### 4.
 
 ##### Case - ignore the whitespaces on both ends.
 
-![Screen Shot 2019-04-06 at 21.51.48](/Users/Personal/Desktop/Screen Shot 2019-04-06 at 21.51.48.png)
+![Screen Shot 2019-04-12 at 11.31.14](/Users/Personal/Desktop/Screen Shot 2019-04-12 at 11.31.14.png)
 
 ## Part 4 - Difficulties & Solutions
 
